@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="A study on how Large Language Models (LLMs) exhibit a bias towards valuable and statistically likely responses, mirroring human-like heuristic decision-making.">
+  <meta property="og:title" content="A Theory of Response Sampling in LLMs: Part Descriptive and Part Prescriptive"/>
+  <meta property="og:description" content="A study on how Large Language Models (LLMs) exhibit a bias towards valuable and statistically likely responses, mirroring human-like heuristic decision-making."/>
+  <meta property="og:url" content="https://pramod-kaushik.github.io/llm-response-sampling/"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/images/teaser.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="A Theory of Response Sampling in LLMs: Part Descriptive and Part Prescriptive">
+  <meta name="twitter:description" content="A study on how Large Language Models (LLMs) exhibit a bias towards valuable and statistically likely responses, mirroring human-like heuristic decision-making.">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/teaser.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="LLM, Large Language Models, Sampling, Value Bias, Decision Making, Heuristics, System-1, System-2">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>A Theory of LLM Sampling</title>
+  <!--<link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">-->
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">A Theory of LLM Sampling: Part Descriptive and Part Prescriptive</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/sarathsivaprasad1729/" target="_blank">Sarath Sivaprasad</a><sup>*,1</sup>,</span>
+                <span class="author-block">
+                  <a href="https://www.linkedin.com/in/pramod-kaushik-72341916/" target="_blank">Pramod Kaushik</a><sup>*,2</sup>,</span>
+                  <span class="author-block">
+                    <a href="https://s-abdelnabi.github.io/" target="_blank">Sahar Abdelnabi</a><sup>3</sup>,</span>
+                  <span class="author-block">
+                      <a href="https://cispa.saarland/group/fritz/" target="_blank">Mario Fritz</a><sup>1</sup>
+                  </span>
+                  </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block">
+                      <sup>1</sup>CISPA Helmholtz Center for Information Security, <sup>2</sup>TCS Research, Pune, <sup>3</sup>Microsoft<br>
+                      <strong>ACL 2025 Oral and Panel Selection</strong>
+                    </span>
+                    <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+
+                        <!-- ArXiv abstract Link -->
+                      <span class="link-block">
+                        <a href="https://arxiv.org/abs/2402.11005" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="ai ai-arxiv"></i>
+                        </span>
+                        <span>arXiv</span>
+                      </a>
+                    </span>
+                         <!-- Arxiv PDF link -->
+                      <span class="link-block">
+                        <a href="https://arxiv.org/pdf/2402.11005" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+                    <!-- Supplementary PDF link -->
+                    <!-- <span class="link-block">
+                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Supplementary</span>
+                    </a>
+                  </span> -->
+
+                  <!-- Github link -->
+                  <span class="link-block">
+                    <a href="https://github.com/pramod-kaushik/llm-response-sampling" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <!-- Twitter link -->
+                <span class="link-block">
+                  <a href="https://x.com/sahar_abdelnabi/status/1926055035164561737" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <!-- <span class="icon">
+                    <i class="fab fa-slack"></i>
+                  </span> -->
+                  <span>Twitter</span>
+                </a>
+              </span>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <figure class="image">
+        <img src="static/images/teaser.png" alt="Teaser Image">
+      </figure>
+      <h2 class="subtitle has-text-centered">
+        When faced with a large number of possible options to consider, deliberation becomes computationally prohibitive and agents rely on heuristics. This heuristics driven mode is called as 'System-1 thinking (and the deliberative mode is called 'System-2').  
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- End teaser video -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Large Language Models (LLMs) are increasingly utilized in autonomous decision-making, where they sample options from vast action spaces. However, the heuristics that guide this sampling process remain under-explored. We study this sampling behavior and show that this underlying heuristics resembles that of human decision-making: comprising a descriptive component (reflecting statistical norm) and a prescriptive component (implicit ideal encoded in the LLM) of a concept. We show that this deviation of a sample from the statistical norm towards a prescriptive component consistently appears in concepts across diverse real-world domains like public health, and economic trends. To further illustrate the theory, we demonstrate that concept prototypes in LLMs are affected by prescriptive norms, similar to the concept of normality in humans. Through case studies and comparison with human studies, we illustrate that in real-world applications, the shift of samples toward an ideal value in LLMs' outputs can result in significantly biased decision-making, raising ethical concerns. 
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- End paper abstract -->
+
+<!-- Blog Post -->
+<section class="section hero" style="background-color: white;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div class="content has-text-justified">
+          <h2 class="title is-3 has-text-centered">Investigating how LLMs make decisions</h2>
+
+          <section id="why">
+            <h2 class="title is-5">1. The Dilemma of Infinite Possibilities</h2>
+            <p>Any open-ended intelligent agent, whether it is a human or an LLM, faces a fundamental dilemma. In many contexts, there are countless possible actions or completions that could, in principle, be realized. But which ones to pursue? These possibilities span a wide range, from coherent to incoherent, relevant to irrelevant, morally sound to deeply questionable. The vast majority are never realized, not because they are impossible, but because there are simply too many to consider.
+
+              Faced with this, natural agents rely on heuristics: coarse, often unconscious shortcuts that help filter and prioritize what to express or act upon. 
+            </p>  
+              
+            <p>Are LLMs doing something similar in such situations? How do they navigate this space? What implicit regularities guide their generation?
+            </p>
+            
+          </section>
+          <section id="preference">
+            <h2 class="title is-5">2. From Possibility to Preference</h2>
+            <p>
+              When humans engage in decision making, whether completing a sentence, offering advice, or imagining an action in a scenario, their outputs often reflect more than what is merely plausible or frequent. Even without being asked to express a value judgment, people tend to produce responses that align with what feels appropriate, desirable, or ideal. 
+            </p>
+            <blockquote><strong> Why do humans do this? </strong></blockquote>
+            <p>Humans do not consider options based on just how statistically likely they are! There are multiple factors that push human outputs to value driven answers like pragmatic goals, the psychological dominance of social norms over statistics, bounded-rationality heuristics that collapse large option spaces toward “ideals”. All these push human outputs towards some direction of value</p>
+
+            <p>This led us to ask whether LLMs exhibit a similar tendency. When generating outputs from an innumerable possibility space, regardless of whether the prompt specifies any goal: Do their samples drift toward values that resemble implicit ideals?
+            To investigate this, we designed a series of experiments aimed at disentangling descriptive behavior (reflecting what is statistically expected) from prescriptive drift (reflecting what might be considered ideal). We began with tightly controlled fictional setups, then extended the analysis to real-world domains such as medicine, education, and lifestyle. In each case, we examined whether model outputs tended to align with statistical averages, or systematically leaned toward ideals even when those values were not requested.</p>
+
+            <figure class="image" style="margin-top: 2rem; margin-bottom: 2rem;">
+              <img src="static/images/concept_pic.png" alt="Conceptual illustration of the experiment">
+              <figcaption class="has-text-centered">When LLMs sample on a concept C, they seem to sample from a distribution that is both statistically more likely and more valuable resulting in a shift in the sampled distribution toward the ideal value</figcaption>
+            </figure>
+
+          </section>
+
+
+
+          <section id="findings">
+            <h2 class="title is-5">3. Three take-home findings</h2>
+            <table class="table is-bordered is-striped is-fullwidth">
+              <thead>
+                <tr><th>#</th><th>What we found</th><th>Why it matters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><strong>Descriptive + Prescriptive heuristic is real.</strong> Across 500 concepts and 15 models, samples systematically drift toward an “ideal” value rather than sitting on the statistical average.</td>
+                  <td>Any agent that relies on raw model samples (e.g., planners, tool wrappers) is inheriting this hidden value bias.</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><strong>Bigger ≠ safer.</strong> The prescriptive pull <em>increases</em> with model size and with RLHF / instruction tuning.</td>
+                  <td>Scaling laws need to account for value drift, not just accuracy.</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><strong>Human ≠ model ideals.</strong> The direction of the “ideal” often clashes with human judgements</td>
+                  <td>Alignment work must confront the fact that larger, better models may amplify, not reduce misalignment.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="method">
+            <h2 class="title is-5">4. How we proved it</h2>
+            <ol>
+              <li><strong>A clean “glubbing” sandbox</strong><br>
+                  We associate a statistical norm on a new fictional concept called 'glubbing' by providing 100 examples from a known Gaussian distribution (μ = 45 hrs). To estblish the prescriptive norm on the concept we create grading scheme that labels either high numbers with high grades(positive ideal), low numbers with high grades (negative ideal), or mean value with high grades (neutral ideal). The model’s chosen sample shifts <em>toward</em> the graded ideal—even though we never asked it to optimise for grades.</li>
+              <li><strong>500 real-world concepts, 10 domains</strong><br>
+                  For each concept (e.g., “hours of TV per day”) we asked the model for:
+                  <ul>
+                    <li><strong>Average</strong> value (descriptive)</li>
+                    <li><strong>Ideal</strong> value (prescriptive)</li>
+                    <li><strong>A single sample</strong></li>
+                  </ul>
+                  What we observe that across models, domains and concepts, the sample overwhelmingly leans toward the ideal value.</li>
+              <li><strong>A medical case study</strong><br>
+                  Acting as a virtual doctor, GPT-4 recommended patient recovery times. Samples skewed toward quicker-than-average discharges significantly more often than chance, mirroring the model’s lower “ideal” recovery window. This would be an obvious patient-safety concern when LLM agents are deployed in real-world medical settings.</li>
+            </ol>
+          </section>
+
+          <section id="implications">
+            <h2 class="title is-5">4. What changes after this paper?</h2>
+            <ul>
+              <li><strong>For practitioners</strong> – Treat raw LLM samples as <em>opinions with a moral tilt</em>, not neutral draws. If your pipeline assumes samples reflect real-world statistics, add an explicit debias or re-weighting stage.</li>
+              <li><strong>For alignment researchers</strong> – The prescriptive bias is a first-order property of autoregressive sampling. Any alignment scheme must surface, audit, or correct this bias before relying on chains-of-thought or planning wrappers.</li>
+              <li><strong>For cognitive scientists</strong> – Our results echo decades of work on human “System 1” heuristics, suggesting convergent solutions to limited-computation decision-making. But unlike humans, LLM ideals are imported from training data rather than lived experience.</li>
+            </ul>
+          </section>
+
+          <section id="limitations">
+            <h2 class="title is-5">5. Limitations &amp; open questions</h2>
+            <ul>
+              <li><strong>Where do the ideals come from?</strong> Pre-training corpus, RLHF, ghost-frequency effects? We separate them only coarsely so far.</li>
+              <li><strong>Can we override them?</strong> Preliminary “debias” or “critique” prompts still leave a residual pull; designing an unbiased critic is non-trivial.</li>
+              <li><strong>Do prototypes store the bias?</strong> Early evidence suggests concept prototypes in a model also carry prescriptive weight.</li>
+            </ul>
+          </section>
+
+          <section id="resources">
+            <h2 class="title is-5">6. Grab the paper &amp; code</h2>
+            <ul>
+              <li><strong>Paper PDF:</strong> <a href="#" target="_blank" rel="noopener">Download</a></li>
+              <li><strong>Appendices &amp; full prompts:</strong> <a href="https://github.com/pramod-kaushik/llm-response-sampling/tree/main" target="_blank" rel="noopener">GitHub repo</a></li>
+              <li><strong>Notebook Demo:</strong> <a href="https://github.com/pramod-kaushik/llm-response-sampling/blob/main/exp1_glubbing/glubbing.ipynb" target="_blank" rel="noopener">Run the “glubbing” experiment</a></li>
+            </ul>
+          </section>
+
+          <section id="ack">
+            <h2 class="title is-5">7. Acknowledgements</h2>
+            <p>This work is a joint effort between CISPA Helmholtz Center for Information Security, TCS Research, and Microsoft. Thanks to the anonymous ACL reviewers for insightful feedback, and to the broader community for discussions on value alignment.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- End Blog Post -->
+
+
+<!-- Image carousel
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+       <div class="item">
+        <img src="static/images/carousel1.jpg" alt="MY ALT TEXT"/>
+        <h2 class="subtitle has-text-centered">
+          First image description.
+        </h2>
+      </div>
+      <div class="item">
+        <img src="static/images/carousel2.jpg" alt="MY ALT TEXT"/>
+        <h2 class="subtitle has-text-centered">
+          Second image description.
+        </h2>
+      </div>
+      <div class="item">
+        <img src="static/images/carousel3.jpg" alt="MY ALT TEXT"/>
+        <h2 class="subtitle has-text-centered">
+         Third image description.
+       </h2>
+     </div>
+     <div class="item">
+      <img src="static/images/carousel4.jpg" alt="MY ALT TEXT"/>
+      <h2 class="subtitle has-text-centered">
+        Fourth image description.
+      </h2>
+    </div>
+  </div>
+</div>
+</div>
+</section> 
+
+<div style="height: 100px; margin: 20px 0; border-bottom: 1px solid #eee;"></div>-->
+
+<!-- End image carousel -->
+
+
+
+
+<!-- Youtube video -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <!-- Paper video. -->
+      <h2 class="title is-3">Video Presentation</h2>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          
+          <div class="publication-video">
+            <!-- Youtube embed code here -->
+            <iframe src="https://www.youtube.com/embed/COOFl8NSS4w" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- End youtube video -->
+
+
+<!--
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">Another Carousel</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-video1">
+          <video poster="" id="video1" autoplay controls muted loop height="100%">
+          
+            <source src="static/videos/carousel1.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video2">
+          <video poster="" id="video2" autoplay controls muted loop height="100%">
+        
+            <source src="static/videos/carousel2.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay controls muted loop height="100%">\
+    
+            <source src="static/videos/carousel3.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+-->
+
+<!-- End video carousel -->
+
+
+<!-- Paper poster -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Poster</h2>
+
+      <div class="columns is-centered">
+        <div class="column is-two-thirds has-text-centered">
+          <embed src="static/pdfs/Poster_acl_new.pdf#view=FitV" width="100%" style="height: 85vh;">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--End paper poster -->
+
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@inproceedings{sivaprasad2025theory,
+        title={A Theory of Response Sampling in LLMs: Part Descriptive and Part Prescriptive},
+        author={Sivaprasad, Sarath and Kaushik, Pramod and Abdelnabi, Sahar and Fritz, Mario},
+        booktitle={Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+        pages={30091--30135},
+        year={2025}
+      }
+      
+    </div>
+</section>
+
+<!--End BibTex citation -->
+
+
+<!--ooter class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the < a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>-->
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
